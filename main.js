@@ -1,3 +1,4 @@
+Objects=[];
 Status=""
 
 
@@ -9,6 +10,7 @@ function setup() {
     canvas=createCanvas(640,480);
     canvas.center();
     ObjectDetector=ml5.objectDetector("cocossd",modelloaded);
+    document.getElementById("status").innerHTML="Status:Detecting Objects";
 }
 
 function modelloaded() {
@@ -23,19 +25,24 @@ function GotResult(error,results) {
     }
     else {
         console.log(results);
+        objects=results;
     }
 }
 
 function draw() {
     image(img,0,0,640,480);
-    fill("red");
-    textSize(25);
-    text("dog",50,80);
-    noFill();
-    rect(45,55,400,420);
-    fill("Blue");
-    text("cat",305,120);
-    noFill();
-    rect(300,100,300,350)
+
+    if(Status!="") {
+        for(i=0;i<objects.length;i++) {
+         fill("red");
+         textSize(25);
+         percent=floor(objects[i].confidence*100);
+         text(objects[i].label+" "+percent+"%",objects[i].x,objects[i].y);
+         noFill();
+         rect(objects[i].x,objects[i].y,objects[i].width,objects[i].height);
+         document.getElementById("status").innerHTML="Status:Objects Detected";
+        }
+    }
+
 }
 
